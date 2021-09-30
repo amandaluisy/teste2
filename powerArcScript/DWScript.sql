@@ -1,0 +1,91 @@
+
+CREATE TABLE public.data (
+                sk_data INTEGER NOT NULL,
+                nk_data DATE NOT NULL,
+                dia INTEGER NOT NULL,
+                mes INTEGER NOT NULL,
+                ano INTEGER NOT NULL,
+                CONSTRAINT sk_data PRIMARY KEY (sk_data)
+);
+
+
+CREATE SEQUENCE public.avaliacao_sk_avaliacao_seq;
+
+CREATE TABLE public.avaliacao (
+                sk_avaliacao INTEGER NOT NULL DEFAULT nextval('public.avaliacao_sk_avaliacao_seq'),
+                nk_avaliacao INTEGER NOT NULL,
+                nota INTEGER NOT NULL,
+                classificacao VARCHAR(10) NOT NULL,
+                CONSTRAINT sk_avaliacao PRIMARY KEY (sk_avaliacao)
+);
+
+
+ALTER SEQUENCE public.avaliacao_sk_avaliacao_seq OWNED BY public.avaliacao.sk_avaliacao;
+
+CREATE SEQUENCE public.produto_sk_produto_seq;
+
+CREATE TABLE public.produto (
+                sk_produto INTEGER NOT NULL DEFAULT nextval('public.produto_sk_produto_seq'),
+                nk_produto INTEGER NOT NULL,
+                modelo VARCHAR(50) NOT NULL,
+                valor NUMERIC(10,2) NOT NULL,
+                CONSTRAINT sk_produto PRIMARY KEY (sk_produto)
+);
+
+
+ALTER SEQUENCE public.produto_sk_produto_seq OWNED BY public.produto.sk_produto;
+
+CREATE SEQUENCE public.cliente_sk_cliente_seq;
+
+CREATE TABLE public.cliente (
+                sk_cliente INTEGER NOT NULL DEFAULT nextval('public.cliente_sk_cliente_seq'),
+                nk_cliente INTEGER NOT NULL,
+                nm_cliente VARCHAR(50) NOT NULL,
+                sexo VARCHAR(10) NOT NULL,
+                dt_nascimeto DATE NOT NULL,
+                bairro VARCHAR(50) NOT NULL,
+                CONSTRAINT sk_cliente PRIMARY KEY (sk_cliente)
+);
+
+
+ALTER SEQUENCE public.cliente_sk_cliente_seq OWNED BY public.cliente.sk_cliente;
+
+CREATE TABLE public.pedido (
+                sk_produto INTEGER NOT NULL,
+                sk_cliente INTEGER NOT NULL,
+                sk_avaliacao INTEGER NOT NULL,
+                dd_codpedido INTEGER NOT NULL,
+                dd_hora_pedido VARCHAR(50) NOT NULL,
+                md_qtd INTEGER NOT NULL,
+                md_valor_total REAL NOT NULL,
+                sk_data INTEGER NOT NULL
+);
+
+
+ALTER TABLE public.pedido ADD CONSTRAINT data_pedido_fk
+FOREIGN KEY (sk_data)
+REFERENCES public.data (sk_data)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.pedido ADD CONSTRAINT avaliacao_pedido_fk
+FOREIGN KEY (sk_avaliacao)
+REFERENCES public.avaliacao (sk_avaliacao)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.pedido ADD CONSTRAINT produto_pedido_fk
+FOREIGN KEY (sk_produto)
+REFERENCES public.produto (sk_produto)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.pedido ADD CONSTRAINT cliente_pedido_fk
+FOREIGN KEY (sk_cliente)
+REFERENCES public.cliente (sk_cliente)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
